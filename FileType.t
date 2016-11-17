@@ -1,0 +1,3 @@
+FileType struct{
+filename string
+}
