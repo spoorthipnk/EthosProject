@@ -23,8 +23,8 @@ install: Tree
 	install Tree $(install.rootfs)/programs
 	install Tree $(install.minimaltd.rootfs)/programs
 	echo -n /programs/Tree | ethosStringEncode > $(install.rootfs)/etc/init/console
-	mkdir -p $(install.rootfs)/root/EthosProject
-	setfattr -n user.ethos.typeHash -v $(shell egPrint FileType hash FileType) $(install.rootfs)/root/EthosProject
+	mkdir -p $(install.rootfs)/user/nobody/myDir
+	setfattr -n user.ethos.typeHash -v $(shell egPrint FileType hash FileType) $(install.rootfs)/user/nobody/myDir
 
 
 FileType.go: FileType.t
@@ -39,3 +39,4 @@ clean:
 	rm -rf Tree
 	rm -rf Tree.goo.ethos
 	rm -rf FileType
+	
