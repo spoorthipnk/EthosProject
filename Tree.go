@@ -1,12 +1,11 @@
 package main
-import(
 
+import(
 "ethos/efmt"
 "ethos/ethos"
 "ethos/syscall"
-"log"
-
 )
+
 func isDir(fd syscall.Fd,dirName string)(bool) {
 	efmt.Println("isDir", dirName)
 	fd1,status1 := ethos.OpenDirectory(fd,dirName)
@@ -17,41 +16,36 @@ func isDir(fd syscall.Fd,dirName string)(bool) {
 	}
 	return false	
 }
+
 func useless(fd syscall.Fd){
 	}
 
-func Walk(fd syscall.Fd,p string){
+func Walk(p string){
 	efmt.Println("walking")
         filename := " "
         listFileName := " "
-        for {
-		count := 0
+	fd,status := ethos.OpenDirectoryPath(p)
+	efmt.Println("Status ",status)
+        for {	
                 name,status := ethos.GetNextName(fd,filename)
                 if status!=syscall.StatusOk {
                         break
                 }
                 filename = string(name)
-		
 		if filename == "." {
-			efmt.Println("Filename. ",filename)
-			count = 1
+			continue
 		}
-		if filename == ".." {
-			count = 1
+		if filename == ".." {	
+			continue
 		}
-		if count == 0 {
-		efmt.Println("Filename1",filename)
+		new_path := p + "/" +filename
+		efmt.Println("FINALPATH: ",new_path)
 		if isDir(fd,filename) {
 			listFileName = listFileName + "  " + filename
 			efmt.Println("filename",filename)
 			efmt.Println("spoorthi",listFileName)
-			p = p + "/"+filename
-			efmt.Println("path",p)
-			fd,status := ethos.OpenDirectoryPath(p)
-			efmt.Println(status)
-			Walk(fd,p)
-		}
-		}       
+			Walk(new_path)
+		}      
         }
 }
 
@@ -59,9 +53,5 @@ func main(){
 	me:=syscall.GetUser()
 	p:="/user/"+me+"/myDir"
 	efmt.Println("Path: ",p)
-	fd, status := ethos.OpenDirectoryPath(p)
-	if status != syscall.StatusOk {
-	log.Fatalf ("Error opening %v: %v\n", p, status)
-	}
-	Walk(fd,p)
+	Walk(p)
 }
